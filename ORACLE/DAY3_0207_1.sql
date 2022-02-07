@@ -1,0 +1,57 @@
+--데이터 타입NUMBER 연습 테이블
+--NUMBER : 자바로 따지면 BYTE, SHORT,INT, LONG, FLOAT, DOUBLE
+--		   NUMBER(전체 자릿수(정밀도), 소수점 자리수)
+--TABLE_NUMBER : 테이블 이름
+CREATE TABLE TABLE_NUMBER(
+	COL1 NUMBER,		-- 자릿수를 지정하지 않으면 최대 38자리이다.
+	COL2 NUMBER(5),
+	COL3 NUMBER(7,2),
+	COL4 NUMBER(2,5)
+);
+--정상적인 실행
+INSERT INTO TABLE_NUMBER
+(COL1, COL2, COL3, COL4)
+VALUES(1234567, 12345, 12345.67, 0.00012);
+
+--COL2(5) 칼럼의 자릿수가 6개 : 오류
+INSERT INTO TABLE_NUMBER
+(COL1, COL2, COL3, COL4)
+VALUES(1234567, 123456, 12345.67, 0.00012);
+
+--COL3 (7,2)칼럼은 소수점 이하 자릿수를 2개로 맞추기 위해 반올림 한다.
+INSERT INTO TABLE_NUMBER
+(COL1, COL2, COL3, COL4)
+VALUES(1234567, 12345, 12345.678, 0.00012);
+
+--COL3 (7,2) 칼럼 전체 자릿수 7개 : 소수점 이하는 항상 2개, 그리고 정수부 5자리
+--그래서 정수부가 5자리를 초과하면 6자리라서 오류가 난다.
+INSERT INTO TABLE_NUMBER
+(COL1, COL2, COL3, COL4)
+VALUES(1234567, 12345, 123456.67, 0.00012);
+
+
+--COL4 칼럼은 NUMBER(2,5) : 전체 유효자릿수 :5개
+--이때 항상 유효자릿수 최대 2개(0 포함 가능), 나머지 3개는 무조건 0이다.
+--소수점 자릿수 넘어가면 반올림한다.
+INSERT INTO TABLE_NUMBER
+(COL1, COL2, COL3, COL4)
+VALUES(1234567, 12345, 12345.67, 0.000126);
+
+--COL4 칼럼은 NUMBER(2,5) : 최소 나머지 3개는 유효자릿수 0 -> 이게 아니라면 오류
+INSERT INTO TABLE_NUMBER
+(COL1, COL2, COL3, COL4)
+VALUES(1234567, 12345, 12345.67, 0.0012);
+
+--예)0.00012300 일 때, 유효한 숫자 0.000123 123뒤에 있는 00은 유효한 값이 아니다
+-- 정수로 따진다면 0012300하면 12300은 유효한 숫자지만
+--	    앞에 있는 00은 유효한 값이 아니다
+
+--COL4 칼럼은 NUMBER(2,5) : 0이 3개 이상이어야 한다.
+INSERT INTO TABLE_NUMBER
+(COL1, COL2, COL3, COL4)
+VALUES(1234567, 12345, 12345.67, 0.0000000123);
+
+--COL4 칼럼은 NUMBER(2,5) : 0 포함 가능
+INSERT INTO TABLE_NUMBER
+(COL1, COL2, COL3, COL4)
+VALUES(1234567, 12345, 12345.67, 0.0);
